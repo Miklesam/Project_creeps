@@ -48,77 +48,36 @@ class MainActivity : AppCompatActivity() {
         val radSize = radiantCreeps.size
         for (i in 0 until radSize) {
             val currentRad = radiantCreeps[i]
-            var haveEnemyAtLine = false
-            var index = 0
-            for (j in 0 until direCreeps.size) {
-                if (currentRad.y == direCreeps[j].y) {
-                    haveEnemyAtLine = true
-                    index = j
-                    break
-                } else {
-                    haveEnemyAtLine = false
-                }
-            }
-            when {
-                currentRad.hp < 0 -> {
-                    currentRad.die()
-                    radiantCreeps.removeAt(i)
-                    creeps.remove(currentRad)
-                    layout.removeView(currentRad)
-                    return
-                }
-                haveEnemyAtLine -> {
-                    if (direCreeps.size > i) {
-                        if (currentRad.x + currentRad.width > direCreeps[index].x + direCreeps[index].width / 2 && currentRad.x < direCreeps[index].x) {
-                            val dmg = currentRad.attack()
-                            //direCreeps[index].minusHP(dmg)
-                        } else {
-                            currentRad.run(radiantCreeps)
-                        }
-                    }
-                }
-                else -> {
-                    currentRad.run(radiantCreeps)
-                }
+            if (currentRad.hp < 0) {
+                currentRad.die()
+                radiantCreeps.removeAt(i)
+                creeps.remove(currentRad)
+                layout.removeView(currentRad)
+                return
+            } else if ((direCreeps.size > i &&currentRad.x + currentRad.width > direCreeps[i].x + direCreeps[i].width / 2 && currentRad.x < direCreeps[i].x)) {
+                val dmg = currentRad.attack()
+                direCreeps[i].minusHP(dmg)
+            } else {
+                currentRad.run(radiantCreeps)
             }
 
         }
         //val toRunArray = mutableListOf<Creep>()
         for (i in 0 until direCreeps.size) {
             val currentDire = direCreeps[i]
-            var haveEnemyAtLine = false
-            var index = 0
-            for (j in 0 until radiantCreeps.size) {
-                if (currentDire.y == radiantCreeps[j].y) {
-                    haveEnemyAtLine = true
-                    index = j
-                    break
-                } else {
-                    haveEnemyAtLine = false
-                }
+            if (currentDire.hp < 0) {
+                currentDire.die()
+                direCreeps.removeAt(i)
+                creeps.remove(currentDire)
+                layout.removeView(currentDire)
+                return
+            } else if (radiantCreeps.size > i && currentDire.x < radiantCreeps[i].x + radiantCreeps[i].width / 2 && currentDire.x + currentDire.width / 2 > radiantCreeps[i].x + radiantCreeps[i].width / 2) {
+                val dmg = currentDire.attack()
+                radiantCreeps[i].minusHP(dmg)
+            } else {
+                currentDire.run(direCreeps)
             }
-            when {
-                currentDire.hp < 0 -> {
-                    currentDire.die()
-                    direCreeps.removeAt(i)
-                    creeps.remove(currentDire)
-                    layout.removeView(currentDire)
-                    return
-                }
-                haveEnemyAtLine -> {
-                    if (radiantCreeps.size > index) {
-                        if (currentDire.x < radiantCreeps[index].x + radiantCreeps[index].width / 2 && currentDire.x + currentDire.width / 2 > radiantCreeps[index].x + radiantCreeps[index].width / 2) {
-                            val dmg = currentDire.attack()
-                            radiantCreeps[index].minusHP(dmg)
-                        } else {
-                            currentDire.run(direCreeps)
-                        }
-                    }
-                }
-                else -> {
-                    currentDire.run(direCreeps)
-                }
-            }
+
         }
 
     }
