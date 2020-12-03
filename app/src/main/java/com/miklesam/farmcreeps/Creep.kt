@@ -38,7 +38,6 @@ abstract class Creep(
     }
 
     fun minusHP(damage: Int) {
-        Log.w("hp", "hppp $damage $hp")
         hp -= damage
     }
 
@@ -59,11 +58,7 @@ abstract class Creep(
 
     abstract fun run(friendlyCreeps: MutableList<Creep>)
 
-    abstract fun provideRun(
-        toCreep: Creep,
-        friendlyCreeps: MutableList<Creep>,
-        i: Int
-    ):Boolean
+    abstract fun runTop(friendlyCreeps: MutableList<Creep>)
 
     abstract fun attack(): Int
 
@@ -71,8 +66,8 @@ abstract class Creep(
         setImageResource(R.drawable.dead)
     }
 
-    fun generateAttack():Int{
-        val attc = (33..42).random()
+    fun generateAttack(): Int {
+        val attc = (33..68).random()
         return attc
     }
 

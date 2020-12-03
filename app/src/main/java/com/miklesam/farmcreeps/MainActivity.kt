@@ -4,6 +4,7 @@ import android.graphics.Point
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.WindowManager
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
@@ -47,39 +48,57 @@ class MainActivity : AppCompatActivity() {
     private fun changePos() {
         val radSize = radiantCreeps.size
         for (i in 0 until radSize) {
-            val currentRad = radiantCreeps[i]
-            if (currentRad.hp < 0) {
-                currentRad.die()
-                radiantCreeps.removeAt(i)
-                creeps.remove(currentRad)
-                layout.removeView(currentRad)
-                return
-            } else if ((direCreeps.size > i &&currentRad.x + currentRad.width > direCreeps[i].x + direCreeps[i].width / 2 && currentRad.x < direCreeps[i].x)) {
-                val dmg = currentRad.attack()
-                direCreeps[i].minusHP(dmg)
+            if (radiantCreeps.size > i) {
+                val currentRad = radiantCreeps[i]
+                val enemyCreep = direCreeps.find { it.y == currentRad.y }
+                enemyCreep?.let {
+                    if (currentRad.hp <= 0) {
+                        currentRad.die()
+                        radiantCreeps.removeAt(i)
+                        creeps.remove(currentRad)
+                        layout.removeView(currentRad)
+                    } else if (currentRad.x + currentRad.width > enemyCreep.x + enemyCreep.width / 2 && currentRad.x < enemyCreep.x) {
+                        val dmg = currentRad.attack()
+                        enemyCreep.minusHP(dmg)
+                    } else {
+                        currentRad.run(radiantCreeps)
+                    }
+                } ?: {
+                    currentRad.runTop(radiantCreeps)
+                }()
             } else {
-                currentRad.run(radiantCreeps)
+                break
             }
-
         }
         //val toRunArray = mutableListOf<Creep>()
         for (i in 0 until direCreeps.size) {
-            val currentDire = direCreeps[i]
-            if (currentDire.hp < 0) {
-                currentDire.die()
-                direCreeps.removeAt(i)
-                creeps.remove(currentDire)
-                layout.removeView(currentDire)
-                return
-            } else if (radiantCreeps.size > i && currentDire.x < radiantCreeps[i].x + radiantCreeps[i].width / 2 && currentDire.x + currentDire.width / 2 > radiantCreeps[i].x + radiantCreeps[i].width / 2) {
-                val dmg = currentDire.attack()
-                radiantCreeps[i].minusHP(dmg)
+            if (direCreeps.size > i) {
+                val currentDire = direCreeps[i]
+                val enemyCreep = radiantCreeps.find { it.y == currentDire.y }
+                enemyCreep?.let {
+                    if (currentDire.hp <= 0) {
+                        currentDire.die()
+                        direCreeps.removeAt(i)
+                        creeps.remove(currentDire)
+                        layout.removeView(currentDire)
+                    } else if (currentDire.x < enemyCreep.x + enemyCreep.width / 2 && currentDire.x + currentDire.width / 2 > enemyCreep.x + enemyCreep.width / 2) {
+                        val dmg = currentDire.attack()
+                        enemyCreep.minusHP(dmg)
+                    } else {
+                        currentDire.run(direCreeps)
+                    }
+                } ?: {
+                    currentDire.runTop(direCreeps)
+                }()
             } else {
-                currentDire.run(direCreeps)
+                break
+            }
+
+            creeps.forEach {
+                Log.w("Creeps", it.hp.toString() + it.javaClass)
             }
 
         }
-
     }
 
     private fun initNewCreeps() {

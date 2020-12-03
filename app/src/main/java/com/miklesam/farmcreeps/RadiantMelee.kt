@@ -12,28 +12,13 @@ class RadiantMelee(context: Context, height: Float, widthScreen: Int, startPosit
 
     init {
         this.setImageResource(R.drawable.green_walk_1)
-        this.x = 0f - this.width - startPosition * 100 -200
+        this.x = 0f - this.width - startPosition * 100 - 200
         this.healthBar = HealthBar(this, context)
     }
 
     override fun run(friendlyCreeps: MutableList<Creep>) {
-        val sameLineCreeps = friendlyCreeps.filter { it.y == this.y && it.x != this.x }
-        Log.w("same Lines", sameLineCreeps.toString())
-        var collision = false
 
-
-        if (!sameLineCreeps.isNullOrEmpty()) {
-            for (i in sameLineCreeps.indices) {
-                var diff = abs(sameLineCreeps[i].x - this.x)
-                Log.w("same Lines", diff.toString())
-                collision = diff <= 100f
-            }
-        }
-
-
-        if (!collision) {
-            this.x += 7
-        }
+        this.x += 7
 
         increaseCount()
         when (imCount) {
@@ -50,6 +35,10 @@ class RadiantMelee(context: Context, height: Float, widthScreen: Int, startPosit
         if (this.x + this.width > widthScreen) {
             this.x = 0f - this.width - startPosition * 100
         }
+    }
+
+    override fun runTop(friendlyCreeps: MutableList<Creep>) {
+        this.y -= 5
     }
 
     override fun attack(): Int {
@@ -77,36 +66,9 @@ class RadiantMelee(context: Context, height: Float, widthScreen: Int, startPosit
         }
     }
 
-    override fun provideRun(
-        toCreep: Creep,
-        friendlyCreeps: MutableList<Creep>,
-        i: Int
-    ):Boolean {
-        if (this.y > toCreep.y) {
-            this.y -= 5
-            if (this.y < toCreep.y) this.y = toCreep.y
-        } else {
-            this.y += 5
-            if (this.y > toCreep.y) this.y = toCreep.y
-        }
-        increaseCount()
-        when (imCount) {
-            0 -> {
-                this.setImageResource(R.drawable.green_walk_1)
-            }
-            1 -> {
-                this.setImageResource(R.drawable.green_walk_2)
-            }
-            2 -> {
-                this.setImageResource(R.drawable.green_walk_3)
-            }
-        }
-        return true
-    }
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
-        Log.w("Draw", "drawwww")
         healthBar.draw(canvas)
     }
 

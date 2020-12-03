@@ -19,28 +19,7 @@ class DireMelee(context: Context, height: Float, widthScreen: Int, startPosition
 
     override fun run(friendlyCreeps: MutableList<Creep>) {
 
-        val sameLineCreeps = friendlyCreeps.filter { it.y == this.y && it.x != this.x }
-        Log.w("same Lines", sameLineCreeps.toString())
-        var collision = false
-
-
-        if (!sameLineCreeps.isNullOrEmpty()) {
-            for (i in sameLineCreeps.indices) {
-                var diff = abs(sameLineCreeps[i].x - this.x)
-                Log.w("same Lines", diff.toString())
-                collision = diff <= 100f
-                if (!collision) {
-                    break
-                }
-            }
-        }
-
-
-        if (!collision) {
-            this.x -= 7
-        }
-
-
+        this.x -= 7
         increaseCount()
         when (imCount) {
             0 -> {
@@ -56,6 +35,10 @@ class DireMelee(context: Context, height: Float, widthScreen: Int, startPosition
         if (this.x + this.width < 0) {
             this.x = widthScreen.toFloat() - this.width
         }
+    }
+
+    override fun runTop(friendlyCreeps: MutableList<Creep>) {
+        this.y -= 5
     }
 
     override fun attack(): Int {
@@ -84,64 +67,9 @@ class DireMelee(context: Context, height: Float, widthScreen: Int, startPosition
         }
     }
 
-    override fun provideRun(
-        toCreep: Creep,
-        friendlyCreeps: MutableList<Creep>,
-        i: Int
-    ): Boolean {
-        var boooool = true
-        var aboveCreep: Creep? = null
-        var underCreep: Creep? = null
-        if (i > 0) {
-            aboveCreep = friendlyCreeps[i - 1]
-        }
-        if (i + 1 > friendlyCreeps.size) {
-            underCreep = friendlyCreeps[i + 1]
-        }
-        if (this.y > toCreep.y) {
-            if (aboveCreep == null) {
-                this.y -= 5
-            }
-            aboveCreep?.let {
-                if (aboveCreep.y + aboveCreep.height + 5 < this.y) {
-                    this.y -= 5
-                } else {
-                    boooool = false
-                }
-            }
-            if (this.y < toCreep.y) this.y = toCreep.y
-        } else {
-            if (underCreep == null) {
-                this.y += 5
-            }
-            underCreep?.let {
-                if (underCreep.y - 5 < this.y + this.height) {
-                    this.y += 5
-                } else {
-                    boooool = false
-                }
-            }
-            if (this.y > toCreep.y) this.y = toCreep.y
-        }
-        increaseCount()
-        when (imCount) {
-            0 -> {
-                this.setImageResource(R.drawable.red_walk_1)
-            }
-            1 -> {
-                this.setImageResource(R.drawable.red_walk_2)
-            }
-            2 -> {
-                this.setImageResource(R.drawable.red_walk_3)
-            }
-        }
-        return boooool
-    }
-
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
-        Log.w("Draw", "drawwww")
         healthBar.draw(canvas)
     }
 

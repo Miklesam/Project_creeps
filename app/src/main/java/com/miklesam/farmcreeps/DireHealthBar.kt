@@ -36,7 +36,6 @@ class DireHealthBar(val creep: Creep, val context: Context) {
 
         val borderLeft = 0f + 30*creep.width / 100
         val borderRight = 70f * creep.width / 100
-        Log.w("Draw", "healthPointPercentage $healthPointPercentage")
         val borderBottom = 60f
         val borderTop = 50f
         canvas.drawRect(borderLeft, borderTop, borderRight, borderBottom, borderPaint)
