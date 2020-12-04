@@ -64,7 +64,12 @@ class MainActivity : AppCompatActivity() {
                         currentRad.run(radiantCreeps)
                     }
                 } ?: {
-                    currentRad.runTop(radiantCreeps)
+                    if(direCreeps.isNotEmpty()){
+                        currentRad.runTop(radiantCreeps)
+                    }else{
+                        currentRad.run(radiantCreeps)
+                    }
+
                 }()
             } else {
                 break
@@ -88,7 +93,12 @@ class MainActivity : AppCompatActivity() {
                         currentDire.run(direCreeps)
                     }
                 } ?: {
-                    currentDire.runTop(direCreeps)
+                    if(radiantCreeps.isNotEmpty()){
+                        currentDire.runTop(direCreeps)
+                    }else{
+                        currentDire.run(direCreeps)
+                    }
+
                 }()
             } else {
                 break

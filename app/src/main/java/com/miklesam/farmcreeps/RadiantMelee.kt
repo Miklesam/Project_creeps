@@ -38,7 +38,9 @@ class RadiantMelee(context: Context, height: Float, widthScreen: Int, startPosit
     }
 
     override fun runTop(friendlyCreeps: MutableList<Creep>) {
-        this.y -= 5
+        if(this.y>=105){
+            this.y -= 5
+        }
     }
 
     override fun attack(): Int {
